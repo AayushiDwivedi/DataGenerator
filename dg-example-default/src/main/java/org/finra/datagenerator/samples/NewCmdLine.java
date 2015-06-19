@@ -37,7 +37,7 @@ import org.finra.datagenerator.samples.transformer.*;
 
 import org.finra.datagenerator.writer.DefaultWriter;
 
-
+//Adding new comment line
 
 /**
  * Driver for a simple Data Generator example using the Default Distributor and a single transformer.
