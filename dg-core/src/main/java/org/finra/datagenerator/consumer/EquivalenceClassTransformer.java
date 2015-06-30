@@ -32,6 +32,11 @@ import java.util.regex.Pattern;
 public class EquivalenceClassTransformer implements DataTransformer {
 
     private Random random;
+    /**
+     *  List of words
+     */
+
+    private String[] ALL_WORDS = new String[3715];
 
     /**
      * List of alpha numeric chars
@@ -161,6 +166,7 @@ public class EquivalenceClassTransformer implements DataTransformer {
     public EquivalenceClassTransformer() {
         random = new Random(System.currentTimeMillis());
         readSecuritiesList();
+        generateWordDict();
     }
 
     private void readSecuritiesList() {
@@ -292,6 +298,72 @@ public class EquivalenceClassTransformer implements DataTransformer {
         r.append(b.toString());
     }
 
+
+    /**
+     *Add function to read from file and create list of words
+     **/
+    private void generateWordDict() {
+        getWord("words.txt", ALL_WORDS);
+    }
+
+    private void getWord(String filename, String[] wordList){
+        InputStream fileData = getClass().getClassLoader().getResourceAsStream(filename);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(fileData));
+        String line;
+        try {
+            int i = 0;
+            while ((line = reader.readLine()) != null) {
+                String word = line;
+
+                wordList[i] = line;
+
+                i++;
+
+            }
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+
+    /**
+     * Get sentence of specific length
+     */
+
+    private void generateSentence(StringBuilder b, int len){
+        while(len > 0)
+        {
+            String word = ALL_WORDS[random.nextInt(3715)];
+
+            if(word.equals("\""))
+            {
+                int lenQuotedText = random.nextInt(20)+1;
+                b.append(word);
+                String temp = word;
+                word = ALL_WORDS[random.nextInt(3715)];
+                int originalLenQuoted = lenQuotedText;
+                while(lenQuotedText>0 ){
+                    if(len == 0){
+                        break;
+                    }
+                    b.append(" ");
+                    word = ALL_WORDS[random.nextInt(3715)];
+                    if(originalLenQuoted == lenQuotedText && word.equals("\"")){
+                        continue;
+                    }
+                    b.append(word);
+                    len--;
+                    lenQuotedText--;
+                }
+                b.append("\"");
+                b.append(" ");
+
+            }
+            b.append(word);
+            b.append(" ");
+
+            len--;
+        }
+    }
     /**
      * Performs transformations for common equivalence classes/data types
      *
@@ -405,6 +477,10 @@ public class EquivalenceClassTransformer implements DataTransformer {
 
                     case "securityNameNotNASDAQ":
                         b.append(SECURITY_NAMES_NOT_NASDAQ[random.nextInt(SECURITY_NAMES_NOT_NASDAQ.length)]);
+                        break;
+                    case "word":
+                        length = Integer.parseInt(expr);
+                        generateSentence(b,length);
                         break;
 
                     default:

@@ -21,6 +21,7 @@ import org.finra.datagenerator.consumer.DataConsumer;
 import org.finra.datagenerator.reporting.ReportingHandler;
 import org.finra.datagenerator.samples.manager.LineCountManager;
 import org.finra.datagenerator.samples.transformer.SampleMachineTransformer;
+import org.finra.datagenerator.samples.transformer.KmeansTransformer;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -35,9 +36,10 @@ public class SampleMachineConsumer extends DataConsumer {
     private AtomicBoolean exit;
     private long nextReport;
     private long reportGap;
-    private String[] template = new String[]{"var_out_V1", "var_out_V2", "var_out_V3",
-            "var_out_V4", "var_out_V5", "var_out_V6",
-            "var_out_V7", "var_out_V8", "var_out_V9"};
+   // private String[] template = new String[]{"var_out_V1", "var_out_V2", "var_out_V3",
+   //         "var_out_V4", "var_out_V5", "var_out_V6",
+   //         "var_out_V7", "var_out_V8", "var_out_V9"};
+    private String[] template = new String[]{"feat1", "feat2", "feat3", "feat4", "feat5", "centroids"};
 
     private long currentRow, finalRow;
 
@@ -71,6 +73,7 @@ public class SampleMachineConsumer extends DataConsumer {
         ContextWriter contextWrite = new ContextWriter(context, template);
         this.addDataWriter(contextWrite);
         this.addDataTransformer(new SampleMachineTransformer());
+        this.addDataTransformer(new KmeansTransformer());
 
         exit = new AtomicBoolean(false);
         handler = new JenkinsReportingHandler(exit);
