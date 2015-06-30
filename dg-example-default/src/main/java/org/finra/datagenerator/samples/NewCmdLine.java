@@ -77,21 +77,21 @@ public final class NewCmdLine {
 
         //Prepare the consumer with the proper writer and transformer
         DataConsumer consumer = new DataConsumer();
-        consumer.addDataTransformer(new StateMachineTransformer());
+        consumer.addDataTransformer(new KmeansTransformer());
         consumer.setMaxNumberOfLines(1000);
         //Adding custom equivalence class generation transformer - NOTE this will get applied post data generation.
         //MODEL USAGE EXAMPLE: <dg:assign name="var_out_V2" set="%regex([0-9]{3}[A-Z0-9]{5})"/>
         consumer.addDataTransformer(new EquivalenceClassTransformer());
 
         //sample state machine
-        String[] vars = new String[100];
-        for(int i=0;i<100;i++){
-            vars[i] = "x"+String.valueOf(i);
-        }
+      //  String[] vars = new String[100];
+     //   for(int i=0;i<100;i++){
+      //      vars[i] = "x"+String.valueOf(i);
+     //   }
         //consumer.addDataWriter(new DefaultWriter(System.out,
          //        new String[]{"x1", "x2", "x3","x4","x5", "x6", "x7","x8","x9", "x10", "x11","x12","x13", "x14", "x15","x16"}));
-        consumer.addDataWriter(new DefaultWriter(System.out,
-                vars));
+      //  consumer.addDataWriter(new DefaultWriter(System.out,
+      //          vars));
 
         //Logistic regression
        //consumer.addDataWriter(new DefaultWriter(System.out,
@@ -106,8 +106,8 @@ public final class NewCmdLine {
          //       new String[]{"fname","lname","zip", "phone" ,"age", "ssn","income", "ms","email","ip"}));
 
         //kmeans with 5 features
-      // consumer.addDataWriter(new DefaultWriter(System.out,
-       //        new String[]{"feat1", "feat2", "feat3", "feat4", "feat5", "centroids"}));
+      consumer.addDataWriter(new DefaultWriter(System.out,
+           new String[]{"feat1", "feat2", "feat3", "feat4", "feat5", "centroids"}));
         //unicode
         //consumer.addDataWriter(new DefaultWriter(System.out,
           //     new String[]{ "count", "uni"}));
