@@ -169,7 +169,7 @@ public final class CmdLine extends Configured implements Tool {
         LineCountManager jetty = new LineCountManager(maxLines, 500000);
         jetty.prepareServer();
         jetty.prepareStatus();
-        hdfsDist = hdfsDist.setFileRoot("brownbag_demo").setReportingHost(jetty.getHostName()
+        hdfsDist = hdfsDist.setFileRoot("brownbag_demo2").setReportingHost(jetty.getHostName()
                 + ":" + jetty.getListeningPort());
 
         return chartExec;
@@ -200,13 +200,14 @@ public final class CmdLine extends Configured implements Tool {
 
         Engine chartExec = parseCommandLine(args);
 
-        hdfsDist.setConfiguration(this.configuration);
+       // hdfsDist.setConfiguration(this.configuration);
+        hdfsDist.setConfiguration(super.getConf());
         hdfsDist.setOutputFileDir("dg-result");
         chartExec.process(hdfsDist);
 
         return 0;
     }
-
+/*
     @Override
     public void setConf(final Configuration c) {
         this.configuration = c;
@@ -216,5 +217,5 @@ public final class CmdLine extends Configured implements Tool {
     public Configuration getConf() {
         return configuration;
     }
-
+*/
 }
