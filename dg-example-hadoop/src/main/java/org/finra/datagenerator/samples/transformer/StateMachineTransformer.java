@@ -33,7 +33,7 @@ public class StateMachineTransformer implements DataTransformer {
 
     private static final Logger log = Logger.getLogger(StateMachineTransformer.class);
     private final Random rand = new Random(System.currentTimeMillis());
-    private Random gen = new Random(1000);
+    private Random gen = new Random(10000000);
     private double rangeMin, rangeMax;
 
     /**
