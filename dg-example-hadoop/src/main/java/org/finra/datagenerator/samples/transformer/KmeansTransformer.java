@@ -1,18 +1,3 @@
-/*
- * Copyright 2014 DataGenerator Contributors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package org.finra.datagenerator.samples.transformer;
 
@@ -27,76 +12,109 @@ import java.util.Random;
 
 
 /**
- * A simple transformer replacing the reserved string "customplaceholder" with a random integer.
- */
+ *  * A simple transformer replacing the reserved string "customplaceholder" with a random integer.
+ *   */
 public class KmeansTransformer implements DataTransformer {
 
     private static final Logger log = Logger.getLogger(KmeansTransformer.class);
     private Random gen = new Random(1000);
-    private double rangeMax, rangeMin, mean, variance;
-    private double m1, m2, m3,m4,m5;
+    private double rangeMax, rangeMin;
+    private double c1, c2, c3,c4,c5, noise;
     /**
-     * The transform method for this DataTransformer
-     *
-     * @param cr a reference to DataPipe from which to read the current map
-     */
-    public void transform(DataPipe cr) {
+ *      * The transform method for this DataTransformer
+ *           *
+ *                * @param cr a reference to DataPipe from which to read the current map
+ *                     */
+    public void setKmean(String centroid){
+        switch(centroid){
+            case "Vec0":
+                c1 = 45.00;
+                c2 = -0.10;
+                c3 = 45.00;
+                c4 = -1.00;
+                c5 = 10.00;
+                rangeMax = 100;
+                rangeMin = -10;
+                break;
+            case "Vec1":
+                c1 = 100.00;
+                c2 = 50.10;
+                c3 = -50.00;
+                c4 = 90.00;
+                c5 = 110.00;
+                rangeMax = 150;
+                rangeMin = -70;
+                break;
+            case "Vec2":
+                c1 = -110.00;
+                c2 = -500.10;
+                c3 = -60.00;
+                c4 = -3.00;
+                c5 = 70.00;
+                rangeMax =90;
+                rangeMin = -600;
+                break;
+            case "Vec3":
+                c1 = 1.00;
+                c2 = 0.10;
+                c3 = 2.00;
+                c4 = 1.00;
+                c5 = 1.00;
+                rangeMax = 5;
+                rangeMin = -1;
+                break;
+            case "Vec4":
+                c1 = 900.00;
+                c2 = 500.00;
+                c3 = 200.00;
+                c4 = 400.00;
+                c5 = 300.00;
+                rangeMax = 1000;
+                rangeMin = 150;
+                break;
+        }
+    }
 
+    public double addNoise(double centroid)
+    {   double f_sigma = 0.1, f_mu = 0.1, sigma,mu;
+        /*Noise is assumed to be proportional to the size of the centroid.
+ *         i.e., if x cord of centroid is large, the noise along x-axis is also large.
+ *                 This can be changed as required
+ *                          */
+        noise = gen.nextGaussian();
+        sigma = f_sigma * centroid;
+        mu = f_mu * centroid;
+        noise = noise * sigma + mu; //standard normal to normal
+        centroid = centroid + noise;
+        return centroid;
+    } 
+    
+   public void transform(DataPipe cr) {
+        Map<String, String> state = cr.getDataMap();
         for (Map.Entry<String, String> entry : cr.getDataMap().entrySet()) {
             String value = entry.getValue();
-
+            String whichCentroid = state.get("centroids");
+            setKmean(whichCentroid);
             switch (value) {
                 case "#{feat1}":
-                    // Generate a random number
-                    //int ran = rand.nextInt();
-                    rangeMax = 75.00000;
-                    rangeMin = 55.000000;
-                    mean = 45.0000;
-                    variance = (rangeMax - rangeMin) * gen.nextDouble() + rangeMin-mean;
-                    double f1 = mean + (gen.nextGaussian() * Math.sqrt(Math.abs(variance)) + mean);
-                    entry.setValue(String.valueOf(f1));
+                    entry.setValue(String.valueOf(addNoise(c1)));
                     break;
                 case "#{feat2}":
-                    // Generate a random number
-                    //int ran = rand.nextInt();
-                    rangeMax = 20.00000;
-                    rangeMin = -7.000000;
-                    mean = -0.100;
-                    variance = (rangeMax - rangeMin) * gen.nextDouble() + rangeMin-mean;
-                    double f2 = mean + (gen.nextGaussian() * Math.sqrt(Math.abs(variance)) + mean);
-                    entry.setValue(String.valueOf(f2));
+                    entry.setValue(String.valueOf(addNoise(c2)));
                     break;
                 case "#{feat3}":
-                    rangeMax = 60.00000;
-                    rangeMin = 15.000000;
-                    mean = 45.0000;
-                    variance = (rangeMax - rangeMin) * gen.nextDouble() + rangeMin - mean;
-                    double f3 = mean + (gen.nextGaussian() * Math.sqrt(Math.abs(variance)) + mean);
-                    entry.setValue(String.valueOf(f3));
+                    entry.setValue(String.valueOf(addNoise(c3)));
                     break;
 
                 case "#{feat4}":
-                    rangeMax = 100.00000;
-                    rangeMin = -7.000000;
-                    mean = -1.0;
-                    variance = (rangeMax - rangeMin) * gen.nextDouble() + rangeMin - mean;
-                    double f4 = mean + (gen.nextGaussian() * Math.sqrt(Math.abs(variance)) + mean);
-                    entry.setValue(String.valueOf(f4));
+                    entry.setValue(String.valueOf(addNoise(c4)));
                     break;
 
                 case "#{feat5}":
-                    rangeMax = 80.00;
-                    rangeMin = 7.000000;
-                    mean = 10.00;
-                    variance = (rangeMax - rangeMin) * gen.nextDouble() + rangeMin-mean;
-                    double f5 = mean + (gen.nextGaussian() * Math.sqrt(Math.abs(variance)) + mean);
-                    entry.setValue(String.valueOf(f5));
+                    entry.setValue(String.valueOf(addNoise(c5)));
                     break;
             }
         }
     }
 }
-
-
-
 
