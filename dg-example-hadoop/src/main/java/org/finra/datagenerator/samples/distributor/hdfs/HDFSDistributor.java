@@ -184,9 +184,9 @@ public class HDFSDistributor implements SearchDistributor {
 
         configuration.setBoolean("mapreduce.map.output.compress", true);
         configuration.setBoolean("mapred.compress.map.output", true);
-        configuration.setBoolean("mapred.output.compress", true);
+        configuration.setBoolean("mapred.output.compress", false);
         configuration.setClass("mapred.map.output.compression.codec", GzipCodec.class, CompressionCodec.class);
-        configuration.setClass("mapred.output.compression.codec", GzipCodec.class, CompressionCodec.class);
+       // configuration.setClass("mapred.output.compression.codec", GzipCodec.class, CompressionCodec.class);
 
         /*        configuration.setBoolean("mapreduce.output.fileoutputformat.compress", true);
          configuration.setClass("mapreduce.output.fileoutputformat.compress.codec", GzipCodec.class, CompressionCodec.class);

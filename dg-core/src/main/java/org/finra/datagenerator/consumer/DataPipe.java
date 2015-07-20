@@ -79,7 +79,7 @@ public class DataPipe {
 
         for (String var : outTemplate) {
             if (b.length() > 0) {
-                b.append('|');
+                b.append(',');
             }
             b.append(getDataMap().get(var));
         }

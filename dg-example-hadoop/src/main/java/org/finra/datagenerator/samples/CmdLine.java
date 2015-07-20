@@ -53,7 +53,7 @@ public final class CmdLine extends Configured implements Tool {
 
     private static HDFSDistributor hdfsDist;
     private Configuration configuration;
-
+    private String dirname = "brownbag_demo";
     /**
      * Prints the help on the command line
      *
@@ -101,8 +101,8 @@ public final class CmdLine extends Configured implements Tool {
                 .addOption("i", "inputfile", true, "the scxml input file")
                 .addOption("n", "numberoftimes", true,
                         "an integer, the number of TIME to run the template of a row")
-                .addOption("H", "hdfssequencefile", true,
-                        "the path of the hdfs sequence file to write to")
+                .addOption("H", "hdfsdirectory", true,
+                        "name of the hdfs directory to store results into")
                 .addOption("L", "loglevel", true,
                         "set the log level")
                 .addOption("s", "maxscenarios", true,
@@ -150,6 +150,10 @@ public final class CmdLine extends Configured implements Tool {
                 System.err.println("Unparsable numeric value for option 'm':" + stringValue);
             }
         }
+        
+        if (cmd.hasOption('H')) {
+	   dirname = cmd.getOptionValue('H');
+	}
 
         long maxLines = 0;
         if (cmd.hasOption('s')) {
@@ -169,7 +173,7 @@ public final class CmdLine extends Configured implements Tool {
         LineCountManager jetty = new LineCountManager(maxLines, 500000);
         jetty.prepareServer();
         jetty.prepareStatus();
-        hdfsDist = hdfsDist.setFileRoot("brownbag_demo2").setReportingHost(jetty.getHostName()
+        hdfsDist = hdfsDist.setFileRoot(dirname).setReportingHost(jetty.getHostName()
                 + ":" + jetty.getListeningPort());
 
         return chartExec;
