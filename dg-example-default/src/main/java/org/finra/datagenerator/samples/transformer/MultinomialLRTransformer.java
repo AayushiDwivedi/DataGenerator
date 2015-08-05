@@ -1,17 +1,10 @@
-/*
- * Copyright 2014 DataGenerator Contributors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/**
+ * A simple transformer for multiLRStateMachine.xml
+ * Models data representing whether a patient is diabetic
+ * based on her blood sugar level.
+ * Classifications: NON-DIABETIC, TYPE1, TYPE2, CHILD w/ TYPE1, UNKOWN
+ * Ranges for blood sugar level have been taken from a standard chart
+ * for diabeties.
  */
 
 package org.finra.datagenerator.samples.transformer;
@@ -24,11 +17,6 @@ import org.apache.commons.math3.distribution.LogNormalDistribution;
 import org.apache.commons.math3.distribution.ZipfDistribution;
 import java.util.Map;
 import java.util.Random;
-
-
-/**
- * A simple transformer replacing the reserved string "customplaceholder" with a random integer.
- */
 public class MultinomialLRTransformer implements DataTransformer {
 
     private static final Logger log = Logger.getLogger(MultinomialLRTransformer.class);
@@ -78,6 +66,10 @@ public class MultinomialLRTransformer implements DataTransformer {
         }
     }
 
+    /**Returns YES with probability greater than 0.3 indicating that the patient is an ADULT
+     Returns NO with a probability less than 0.3 indicating that the patient is a CHILD
+     */
+
     private String getAge() {
         if (Math.random() > 0.3) {
             return "YES";
@@ -86,6 +78,11 @@ public class MultinomialLRTransformer implements DataTransformer {
             return "NO";
         }
     }
+    /**
+     * Depending on the blood sugar levels before and after meal and age of the patient,
+     * indicates type of label for the data: NON-DIABETIC, TYPE1, TYPE2, CHILD w/ TYPE1, UNKOWN
+     */
+
 
     private String hasDiabetes(double beforemeal, double aftermeal, String isAdult) {
         if (isAdult.equals("YES")) {

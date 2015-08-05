@@ -203,7 +203,6 @@ public class HDFSDistributor implements SearchDistributor {
         // Mapper
         ret.setMapperClass(DataGeneratorMapper.class);
 
-        // Reducer (none)
         ret.setNumReduceTasks(0);
 
         // Input

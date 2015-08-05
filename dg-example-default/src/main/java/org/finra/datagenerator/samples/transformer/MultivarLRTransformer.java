@@ -1,23 +1,5 @@
-/*
- * Copyright 2014 DataGenerator Contributors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.finra.datagenerator.samples.transformer;
-
 import org.apache.log4j.Logger;
-
 import org.finra.datagenerator.consumer.DataPipe;
 import org.finra.datagenerator.consumer.DataTransformer;
 import org.apache.commons.math3.distribution.LogNormalDistribution;
@@ -27,7 +9,11 @@ import java.util.Random;
 
 
 /**
- * A simple transformer replacing the reserved string "customplaceholder" with a random integer.
+ * A simple transformer to model data for multivariable logistic regression
+ * To be used to transform macros in multivarLRStateMachine.xml
+ * Replaces #{age} and #{income} with random integer and random long double respectively
+ * Replaces #{ms} with a "NO" or "YES" with certain probability indicating the marital status
+ * Replaces #{label} using a simple rule based on age, income and marital status
  */
 public class MultivarLRTransformer implements DataTransformer {
 
@@ -84,6 +70,11 @@ public class MultivarLRTransformer implements DataTransformer {
         }
     }
 
+/**
+ * Returns "No" with probability less than 50%
+ * Return "YES" with probability greater than 50%
+ * Number of YES and NO labels can be regulated using this probability
+ */
     private String getMaritalStatus()
     {
         if(Math.random() < 0.5){

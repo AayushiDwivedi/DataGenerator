@@ -24,6 +24,8 @@ import org.finra.datagenerator.samples.transformer.SampleMachineTransformer;
 import org.finra.datagenerator.samples.transformer.KmeansTransformer;
 import org.finra.datagenerator.samples.transformer.StateMachineTransformer;
 import org.finra.datagenerator.samples.transformer.ColumnTransformer;
+import org.finra.datagenerator.samples.transformer.LabelPropagationTransformer;
+import org.finra.datagenerator.samples.transformer.sample;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -37,10 +39,13 @@ public class SampleMachineConsumer extends DataConsumer {
     private AtomicBoolean exit;
     private long nextReport;
     private long reportGap;
-    
-   // private String[] template = new String[]{"userid", "left", "movieid", "rating", "dataset"};
+   // private String[] template = new String[]{"var_out_V1", "var_out_V2", "var_out_V3",
+   //         "var_out_V4", "var_out_V5", "var_out_V6",
+   //         "var_out_V7", "var_out_V8", "var_out_V9"};
+    private String[] template = new String[]{"userid", "left", "movieid", "rating", "dataset"};
    // private String[] template2 = new String[]{"movieid", "right", "userid", "rating", "dataset"};
-    private String[] template = new String[]{"feat1", "feat2", "feat3", "feat4", "feat5" , "centroids"};
+  // private String[] template = new String[]{"feat1", "feat2", "feat3", "feat4", "feat5" , "centroids"};
+   //private String[] template = new String[]{"centroids","age"};
 
     private long currentRow, finalRow;
 
@@ -75,9 +80,9 @@ public class SampleMachineConsumer extends DataConsumer {
        // ContextWriter contextWrite2 = new ContextWriter(context, template2);
 
         this.addDataWriter(contextWrite);
-       //this.addDataWriter(contextWrite2);
+       // this.addDataWriter(contextWrite2);
         //this.addDataTransformer(new StateMachineTransformer());
-        this.addDataTransformer(new KmeansTransformer());
+        this.addDataTransformer(new StateMachineTransformer());
 
         exit = new AtomicBoolean(false);
         handler = new JenkinsReportingHandler(exit);

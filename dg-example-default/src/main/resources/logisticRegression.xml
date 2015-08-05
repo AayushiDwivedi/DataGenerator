@@ -1,18 +1,8 @@
-<!-- -->
-<!-- Copyright 2014 DataGenerator Contributors -->
-<!-- -->
-<!-- Licensed under the Apache License, Version 2.0 (the "License"); -->
-<!-- you may not use this file except in compliance with the License. -->
-<!-- You may obtain a copy of the License at -->
-<!-- -->
-<!--      http://www.apache.org/licenses/LICENSE-2.0 -->
-<!-- -->
-<!-- Unless required by applicable law or agreed to in writing, software -->
-<!-- distributed under the License is distributed on an "AS IS" BASIS, -->
-<!-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. -->
-<!-- See the License for the specific language governing permissions and -->
-<!-- limitations under the License. -->
-<!-- -->
+<!--Positive and Negative numbers- Sample model for logistic regression -->
+<!-- value: either a positive or negative number; macro transformed using transformer-->
+<!-- lable: 1 if value >0 else 0 -->
+<!-- Total no. of colums =2 -->
+<!-- Total no. of rows = 50 -->
 
 <scxml xmlns="http://www.w3.org/2005/07/scxml"
        xmlns:cs="http://commons.apache.org/scxml"
@@ -25,11 +15,8 @@
     </state>
     <state id="SETV1">
         <onentry>
-
-            <dg:range name="rows" from="0" to="50"/>
-            <!--  <assign name="var_out_V3" expr="#{customplaceholder}"/> -->
+            <dg:range name="rows" from="1" to="50"/>
         </onentry>
-        <!-- <transition event="SETV3" target="SETV3"/> -->
         <transition event="labels" target="labels"/>
     </state>
 
@@ -37,8 +24,6 @@
         <onentry>
             <assign name="value" expr="#{value}"/>
             <assign name="label" expr= "#{label}"/>
-            <!-- <assign name="plabel" expr="#{plabel}"/>-->
-
         </onentry>
         <transition event="end" target="end"/>
     </state>

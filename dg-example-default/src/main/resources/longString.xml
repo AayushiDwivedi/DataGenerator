@@ -1,19 +1,8 @@
-<!-- -->
-<!-- Copyright 2014 DataGenerator Contributors -->
-<!-- -->
-<!-- Licensed under the Apache License, Version 2.0 (the "License"); -->
-<!-- you may not use this file except in compliance with the License. -->
-<!-- You may obtain a copy of the License at -->
-<!-- -->
-<!--      http://www.apache.org/licenses/LICENSE-2.0 -->
-<!-- -->
-<!-- Unless required by applicable law or agreed to in writing, software -->
-<!-- distributed under the License is distributed on an "AS IS" BASIS, -->
-<!-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. -->
-<!-- See the License for the specific language governing permissions and -->
-<!-- limitations under the License. -->
-<!-- -->
-
+<!--Sample model for long sting generation -->
+<!--%word is an equivalence class function. -->
+<!--Usage: %word(n) where n is an integer -->
+<!-- No. of columns =1 (excluding var_loop) -->
+<!-- No. of rows = 100 -->
 <scxml xmlns="http://www.w3.org/2005/07/scxml"
        xmlns:cs="http://commons.apache.org/scxml"
        xmlns:dg="org.finra.datagenerator"
@@ -26,30 +15,18 @@
 
     <state id="SETV1">
         <onentry>
-            <dg:range name="var_loop" from="0" to="1" step="1"/>
-            <dg:transform name="EQ"/>
-
+            <dg:range name="var_loop" from="1" to="100" step="1"/>
+           <!--Adding custom equivalence class generation transformer as defined in EquivalenceClassTransformer.java - NOTE this will get applied during graph traversal.-->
+	    <dg:transform name="EQ"/>
         </onentry>
         <transition event="SETV2" target="SETV2"/>
     </state>
-
     <state id="SETV2">
         <onentry>
            <assign name="lol" expr="%word(1000)"/>
-            <!--  <assign name="var_out_V3" expr="#{customplaceholder}"/> -->
         </onentry>
-        <!-- <transition event="SETV3" target="SETV3"/> -->
         <transition event="end" target="end"/>
     </state>
-
-    <!--<state id="SETV3">
-        <onentry>
-            <assign name="var_out_V4" expr="#{divideBy2}"/>
-            <dg:range name="var_out_V5" from="0" to="100" step="1"/>
-        </onentry>
-        <transition event="end" target="end"/>
-    </state> -->
-
     <state id="end">
         <!-- We're done -->
     </state>

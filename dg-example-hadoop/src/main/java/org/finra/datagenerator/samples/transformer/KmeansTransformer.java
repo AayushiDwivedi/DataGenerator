@@ -1,30 +1,30 @@
-
+/*KmeansTransformer transforms the macros present in 
+ * KmeansStateMachine.xml. This tranformer generates
+ * Kmeans for K=5; dimension of each point is also 5.
+ * Generates R points around each mean by adding random gaussian noise to each k.
+ * Transforms feat1, feat2, feat3, feat4, feat5.
+ */
 package org.finra.datagenerator.samples.transformer;
 
 import org.apache.log4j.Logger;
 
 import org.finra.datagenerator.consumer.DataPipe;
 import org.finra.datagenerator.consumer.DataTransformer;
-import org.apache.commons.math3.distribution.LogNormalDistribution;
-import org.apache.commons.math3.distribution.ZipfDistribution;
 import java.util.Map;
 import java.util.Random;
 
 
-/**
- *  * A simple transformer replacing the reserved string "customplaceholder" with a random integer.
- *   */
+
 public class KmeansTransformer implements DataTransformer {
 
     private static final Logger log = Logger.getLogger(KmeansTransformer.class);
-    private Random gen = new Random(1000);
+    private Random gen = new Random(System.currentTimeMillis());
     private double rangeMax, rangeMin;
     private double c1, c2, c3,c4,c5, noise;
-    /**
- *      * The transform method for this DataTransformer
- *           *
- *                * @param cr a reference to DataPipe from which to read the current map
- *                     */
+/*Assign points to the means (centroids) in 5-dimensional space. 
+ * This can be edited to make the assignement random.
+ */
+
     public void setKmean(String centroid){
         switch(centroid){
             case "Vec0":
@@ -75,12 +75,25 @@ public class KmeansTransformer implements DataTransformer {
         }
     }
 
-    public double addNoise(double centroid)
-    {   double f_sigma = 0.1, f_mu = 0.1, sigma,mu;
-        /*Noise is assumed to be proportional to the size of the centroid.
- *         i.e., if x cord of centroid is large, the noise along x-axis is also large.
- *                 This can be changed as required
- *                          */
+/*Add random gaussian noise around each mean (centroid)
+ * to produce new points for a cluster.
+ * @param mapper: sigma and mu are decided depending on number of mappers 
+ * created. No. of mappers = No. of files generated. Since, data in each file
+ * should be different, providing this dependency can provide different distributions.
+ * Side effect: Mappers with high map number will have loose clusters, ones with low
+ * map number will have tight clusters;
+ * This dependency can be replaced with a better choice of algorithm
+ */
+
+    public double addNoise(double centroid, int mapper, int total_mapper)
+    {   double f_sigma, f_mu, sigma,mu;
+	f_sigma = ((double)mapper/total_mapper);
+	f_mu = 1-f_sigma;
+        
+/*Noise is assumed to be proportional to the size of the centroid.
+ * i.e., if x cord of centroid is large, the noise along x-axis is also large.
+ *  This can be changed as required
+ */
         noise = gen.nextGaussian();
         sigma = f_sigma * centroid;
         mu = f_mu * centroid;
@@ -88,30 +101,37 @@ public class KmeansTransformer implements DataTransformer {
         centroid = centroid + noise;
         return centroid;
     } 
-    
+ 
+/*
+* The transaform method for this DataTransformer
+*@param cr a reference to DataPipe from which to read the current map
+*/   
    public void transform(DataPipe cr) {
         Map<String, String> state = cr.getDataMap();
         for (Map.Entry<String, String> entry : cr.getDataMap().entrySet()) {
             String value = entry.getValue();
             String whichCentroid = state.get("centroids");
-            setKmean(whichCentroid);
+	    setKmean(whichCentroid);
+                                             
+	    int mapper = (int)Double.parseDouble(state.get("mapper"));
+            int total_mapper = (int)Double.parseDouble(state.get("total_mapper"));
             switch (value) {
                 case "#{feat1}":
-                    entry.setValue(String.valueOf(addNoise(c1)));
+                    entry.setValue(String.valueOf(addNoise(c1, mapper, total_mapper)));
                     break;
                 case "#{feat2}":
-                    entry.setValue(String.valueOf(addNoise(c2)));
+                    entry.setValue(String.valueOf(addNoise(c2, mapper, total_mapper)));
                     break;
                 case "#{feat3}":
-                    entry.setValue(String.valueOf(addNoise(c3)));
+                    entry.setValue(String.valueOf(addNoise(c3, mapper, total_mapper)));
                     break;
 
                 case "#{feat4}":
-                    entry.setValue(String.valueOf(addNoise(c4)));
+                    entry.setValue(String.valueOf(addNoise(c4, mapper, total_mapper)));
                     break;
 
                 case "#{feat5}":
-                    entry.setValue(String.valueOf(addNoise(c5)));
+                    entry.setValue(String.valueOf(addNoise(c5, mapper, total_mapper)));
                     break;
             }
         }
